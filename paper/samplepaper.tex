@@ -9,7 +9,7 @@
 %
 %
 \usepackage[utf8]{inputenc}
-\usepackage[ngerman]{babel}      % chnage the used langauge here!!!
+\usepackage[english]{babel}      % chnage the used langauge here!!!
 \usepackage[T1]{fontenc}
 %
 % T1 fonts will be used to generate the final print and online PDFs,
@@ -116,13 +116,13 @@
 % =============  AB HIER DARF UND SOLL GETIPPT WERDEN ========================
 % ============================================================================
 %
-\author{Viel Schreiber}
-\index{Viel Schreiber}
+\author{Florian Schröder}
+\index{Florian Schröder}
 %
 % Das Institut wird fuer den Betreuer missbraucht ...
-\institute{{\bf Betreuerin:} Carla Coder}
+\institute{{\bf Supervisor:} Gerasimos Chourdakis}
 \authorrunning{Viel Schreiber}
-\title{Meine Seminarausarbeitung}
+\title{Can Julia win the Game of Life?}
 %
 %
 \maketitle              % typeset the header of the contribution
@@ -130,147 +130,35 @@
 %
 %
 \begin{abstract}
-Ein schöner Abstract. Das ist einfach die Kurzzusammenfassung.
+  This paper gives an overview of Conway's Game of Life (and cellular automata in general) and various implementations of it in the Julia programming language.
+  It is mostly based on Daniel Shiffman's Nature of Code \cite{NOC}.
 \end{abstract}
 
 
 % Introduction -----------------------------------------------------------------
-\section{Einleitung}
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-At vero eos et accusam et justo duo dolores et ea rebum. 
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-At vero eos et accusam et justo duo dolores et ea rebum. 
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+\section{Introduction}
+
+\section{Methodology}
 
 
-\subsection{Anmerkungen zur Einleitung}
-Hier kommt noch mehr Text. 
-Wir verweisen dazu auf \cite{thisdocument}.
-
-% Formulas -----------------------------------------------------------------
-Eine schöne Formel ist
-\[ u(\vec{x}) = \sum_{i=1}^N \alpha_i \varphi_i(\vec{x}) \,, \]
-aber das geht auch inline als $u(\vec{x}) = \sum_{i=1}^N \alpha_i \varphi_i(\vec{x})$, also mitten im Text.
-
-Es können auch Formeln dargstellt werden, die über mehrere Zeilen gehen, aber trotzdem schön zueinander ausgerichtet sind:
-\begin{align*}
-    f(x) &= a \cdot (1 + b) \\
-         &= a + ab
-\end{align*}
-
-% Images/Graphics -----------------------------------------------------------------
-Was noch fehlt ist ein Bild, z.B.\ das aus \autoref{fig:grid1} oder \autoref{fig:grid2}. 
-Wir können dazu prima die tollen Makros, die oben im Vorspann definiert wurden, verwenden.
-Beispielsweise mit folgenden Befehlen:
-\begin{spverbatim}
-\image{figures/grid_l2.png}{fig:grid1}{Dies ist ein sogenanntes dünnes Gitter zum Level 2.}{Die Kurzform lasse ich meistens leer}
-\imagewithwidth{figures/grid_l2.png}{2cm}{fig:grid2}{Dies ist ein sogenanntes dünnes Gitter zum Level 2 in 2cm Breite.}{}
-\end{spverbatim}
-
-Die Bilder werden automatisch nach vernünftigen Kriterien platziert, daher immer im Text mit \verb!\autoref{}! drauf verweisen (bei den Beispielen mit \verb!\autoref{fig:grid1}! und \verb!\autoref{fig:grid2}!).
-\image{figures/grid_l2.png}{fig:grid1}{Dies ist ein sogenanntes dünnes Gitter zum Level 2.}{Die Kurzform lasse ich meist leer}
-\imagewithwidth{figures/grid_l2.png}{2cm}{fig:grid2}{Dies ist ein sogenanntes dünnes Gitter zum Level 2 in 2cm Breite.}{}
-
-% Anmerkung: damit LaTeX nicht denkt, dass ein Punkt den Satz beendet
-% (da spendiert LaTeX gerne mehr Zwischenraum), können wir das
-% Leerzeichen mit Backslash als Leerzeichen markieren. Damit LaTeX
-% ein Leerzeichen setzt, bei dem es keinen Zeilenumbruch geben darf,
-% kann man die Tilde verwenden.
-% Tables -----------------------------------------------------------------
-Was wir hin und wieder noch brauchen ist eine Tabelle, wie z.B.\ \autoref{tab:irgendwas}.
-\begin{table}[htbp]
-  \centering
-  \caption{Diese Tabelle zeigt nicht die Daten von etwas Sinnvollem, sondern einfach irgend etwas. Tabellenbeschriftungen sind oft drüber.}
-  \label{tab:irgendwas}
-  \begin{tabular}{lrcp{5cm}}
-    \toprule
-    \multicolumn{3}{c}{Spalten} & Absatz 5cm \\
-    \cmidrule(lr){1-3}
-    linksbündig & rechtsbündig & zentriert & \\
-    \midrule
-    1.0 & -1.1 & 1.2 & toller Text, der nach 5cm umbricht und dafür brauchen wir einfach mehr Text. \\
-    4321.1 & 6543.2 & 7654.3 & mehr Text \\
-    2.44 & 4.66 & 6.88 & 8.00 \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-
-% Source-Code -----------------------------------------------------------------
-\subsection{Quellcode}
-Code-Beispiele können mittels \texttt{lstlisting}-Environment eingebunden werden.
-Siehe \autoref{lst:mylisting} als Beispiel.
-Alternativen wie \texttt{minted} sind selbstverständlich auch erlaubt, solange sie Features wie Syntax-Highlighting und Zeilennummern mitbringen.
-Code-Beispiele sollten minimal sein, d.h.\ auf den Punkt gebracht und keinen überflüssigen Code beinhalten.
-Es muss standardkonformer Code sein und mit hinzugefügtem Boilerplate-Code (main, Auslassungen von Überflüssigem, \dots) ohne Fehler compilierbar sein.
-
-Quellcode aus Dateien kann per \texttt{lstinputlisting} einbezogen werden.
-Für Inline-Code \texttt{lstinline} verwenden.
-Für abstrakte Algorithmen (kein C++-Code) besser eines der algorithm-Packages verwenden.
-
-\begin{lstlisting}[style=cpp, caption={Example using Lstlisting}, label={lst:mylisting}, numbers=left]
-// I'm a comment!
-template <typename T>
-struct LessThan {
-  bool operator(T a, T b) { return a < b; };
-};
-
-/*
- * I'm a multiline comment!
- * Ich bin in Kommentar, der mehrere Zeilen verwendet!
- */
-std::vector<int> v = { 5, 4, 3, 2, 1 };
-std::sort(v.begin(), v.end(), LessThan<int>());
-
-std::cout << "Hello, World" << std::endl;
-\end{lstlisting}
-
-
-% Pseudo-Code -----------------------------------------------------------------
-\subsection{Pseudo-Code}
-Für Pseudo-Code kann die \texttt{algorithm}-Umgebung verwendet werden.
-Ein Beispiel ist in \autoref{alg:ppo} zu sehen.
-\begin{algorithm}
-	\caption{PPO}
-	\begin{algorithmic}[htbp]
-		\For {$iteration=1,2,\ldots$}
-			\For {$actor=1,2,\ldots,N$}
-				\State Run policy $\pi_{\theta_{old}}$ in environment for $T$ time steps
-				\State Compute advantage estimates $\hat{A}_{1},\ldots,\hat{A}_{T}$
-			\EndFor
-			\State Optimize surrogate $L$ wrt. $\theta$, with $K$ epochs and minibatch size $M\leq NT$
-			\State $\theta_{old}\leftarrow\theta$
-		\EndFor
-	\end{algorithmic} 
-	\label{alg:ppo}
-\end{algorithm}
-
-
-% Custom graphics -----------------------------------------------------------------
-\subsection{Graphiken}
-Wenn man einfache Graphiken in seiner Ausarbeitung verwenden will, bietet es sich heirfür immer an, diese selbst zu machen. 
-Eine Möglichkeit hierfür ist zum Beispiel TikZ.
-Aber Achtung: zu viele TikZ Bilder können die Compile-Zeit von LaTex negativ beeinflussen.
-
-\begin{figure}[htbp]
-    \centering
-    \begin{tikzpicture}
-        \fill[orange] (-0.5, -0.5) rectangle (2.5, 1.5);
-        \node[circle, fill=white, draw=black] (A) at (1, 1) {$A$};
-        \node[circle, fill=white, draw=black] (B) at (2, 0) {$B$};
-        \node[circle, fill=white, draw=black] (C) at (0, 0) {$C$};
-        \draw[-to] (A) -- (B);
-        \draw[-to] (B) -- (C);
-        \draw[-to] (C) -- (A);
-    \end{tikzpicture}
-    \caption{Ein einfaches Beispiel eines Graphen gezeichnet via TikZ.}
-    \label{fig:tikz}
-\end{figure}
-
-\subsection{Zum Schluss}
-\dots viel Spaß!
-
+\section{Results}
+\subsection{Understanding cellular automata (1D)}
+Grid, states, neighborhood, function which creates the new state
+\subsection{Implementation of 1D in Julia}
+Here I'll also include specific design decisions and discuss the implications of these choices.
+\subsection{Jump to 2D cellular automata (Game of Life)}
+The theory of moving to 2D (now where displaying the "history" by using an animation)
+\subsection{Implementation of 2D (Game of Life) in Julia}
+Here I'll differentiate between simple solutions (like a bool matrix for storing)
+and an object-oriented approach which may be even complexer
+\subsection{Various interesting Game of Life patterns}
+Stable/oscillating/moving patterns which can be destroyed by a single tile (which shows how sensitive such a system might be)
+\subsection{Comparison with other programming languages}
+Here I compare the performance with languages, I think I'll choose JavaScript and Python.
+I don't think that I'll provide implementations with these languages, rather a brief overview of them.
+\section{Discussion}
+\section{Conclusions}
+Here I will summarize the findings and implications of the research conducted.
 
 % ---- Bibliography ----
 \bibliographystyle{alpha}
