@@ -137,6 +137,13 @@
 
 % Introduction -----------------------------------------------------------------
 \section{Introduction}
+The study of complex systems often begins with simple rules.
+Cellular automata, introduced by John von Neumann and later popularized by Stephen Wolfram, are a prime example of how simple, local interactions can lead to surprisingly rich and varied global behavior.
+These models have become a cornerstone in the field of simulations, providing insight into phenomena ranging from biological growth to traffic flow and even the spread of diseases.
+Simulations are essential tools in science and engineering, allowing us to explore the behavior of systems that are too complex, dangerous, or expensive to experiment with directly.
+Cellular automata offer a unique approach to simulation: instead of relying on continuous equations, they use discrete states and local update rules.
+This makes them particularly well-suited for modeling systems where individual components interact in simple, repetitive ways.
+In this paper, we will explore the concept of cellular automata, focusing on Conway's Game of Life, and implement it in the Julia programming language.
 
 \section{Cellular Automata}
 \subsection{Understanding cellular automata}
@@ -176,13 +183,18 @@ The most famous example of a 2D cellular automaton is \textbf{Conway's Game of L
 \end{itemize}
 
 \subsection{Various interesting Game of Life patterns}
-There are many interesting patterns (formations of alive cells) in the Game of Life, which can be classified into different categories:
+There are many interesting patterns (formations of alive cells) in the Game of Life, which can be classified into different categories. Examples are:
 \begin{itemize}
-  \item \textbf{Still lifes}: These patterns do not change over time.
-  \item \textbf{Oscillators}: These patterns change their state periodically.
-  \item \textbf{Spaceships}: These patterns move across the grid.
-  \item \textbf{Guns}: These patterns produce other patterns.
+  \item \textbf{Stable}: These patterns do not change over time. (See \autoref{fig:stable})
+  \item \textbf{Oscillators}: These patterns change their state periodically. (See \autoref{fig:oscillator})
+  \item \textbf{Spaceships}: These patterns seem to move across the grid. (See \autoref{fig:spaceship})
+  \item \textbf{Guns}: These patterns produce ("shoot") other patterns, typically spaceships, in a periodic manner.
 \end{itemize}
+Whats interesting about these patterns (or generally all patterns) is that they can be used to create complex structures,
+but they are also very sensitive to external influences. Even if a single cell is changed, the whole pattern can change drastically (often leading to a complete extinction of the pattern).
+\imagewithwidth{figures/stable}{0.7\textwidth}{fig:stable}{Examples for stable formations\\Source: \url{https://natureofcode.com/static/4f9158d65163cbbb8fa41030a2000079/e80fe/07_ca_29.webp}}{}
+\imagewithwidth{figures/oscillator}{0.7\textwidth}{fig:oscillator}{Examples for oscillators\\Source: \url{https://natureofcode.com/static/04f7903e1010ffd716e12c5c86785894/d4cd6/07_ca_30.webp}}{}
+\imagewithwidth{figures/spaceship}{0.7\textwidth}{fig:spaceship}{Examples for spaceships\\Source: \url{https://natureofcode.com/static/bbac4c485b936395226f8b6addd24e19/46ba6/07_ca_31.webp}}{}
 
 \section{Implementation}
 \subsection{Implementation of 1D in Julia}
