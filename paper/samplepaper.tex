@@ -147,6 +147,7 @@ In this paper, we will explore the concept of cellular automata, focusing on Con
 
 \section{Cellular Automata}
 \subsection{Understanding cellular automata}
+\label{sec:cellular-automata-understanding}
 A cellular automaton itself is a model consisting of cell objects, which have a few properties:
 \begin{itemize}
   \item All cells are arranged in a grid (1D, 2D, or even higher dimensions)
@@ -198,7 +199,15 @@ but they are also very sensitive to external influences. Even if a single cell i
 
 \section{Implementation}
 \subsection{Implementation of 1D in Julia}
-Here I'll also include specific design decisions and discuss the implications of these choices.
+First, I want to implement the most basic version of a 1D cellular automaton in Julia.
+This will serve as a foundation for understanding the principles of cellular automata and how they can be implemented in Julia.
+The final code for this implementation will be available on GitHub TODO ADD LINK.
+As explained in \autoref{sec:cellular-automata-understanding}, a 1D cellular automaton can be represented by a 1D array of cells, where each cell is represented by a pixel.
+We need a function, that takes the neighborhood of a cell and returns the next state of the cell, based on the ruleset (defined by the rule number).
+As previously mentioned, the rulenumber can be represented by an 8-bit number, where each bit represents the next state of the cell for a specific configuration of the neighborhood.
+To check the next state of a cell, we convert the neighborhood of cell into a number and shift the rulenumber by this number of bits to the right. The least significant bit of the result is the next state of the cell.
+The main part ist the \texttt{simulate\_ca} function, which takes the initial state, the rule number and the number of generations and returns all the generated states as a vector of vectors.
+
 \subsection{Implementation of 2D (Game of Life) in Julia}
 Here I'll differentiate between simple solutions (like a bool matrix for storing)
 and an object-oriented approach which may be even complexer
