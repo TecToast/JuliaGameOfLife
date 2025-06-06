@@ -1,11 +1,18 @@
 using Plots
 gr()
 
+"""
+This module implements the Infection Simulation referenced in the paper.
+"""
+
 struct Cell
     color::Symbol
 end
 
-
+"""
+This function initializes a grid with 50% white, 15% red, and 35% blue cells.
+It takes the number of rows and columns as parameters.
+"""
 function initialize_grid(rows::Int, cols::Int)::Matrix{Cell}
 
     grid = fill(Cell(:white), rows, cols)
@@ -25,7 +32,10 @@ function initialize_grid(rows::Int, cols::Int)::Matrix{Cell}
     return grid
 end
 
-
+"""
+This function counts the number of neighboring cells of each color around a cell at position (r, c) in the grid.
+It wraps around the edges of the grid.
+"""
 function count_neighbor_colors(grid::Matrix{Cell}, r::Int, c::Int)::Dict{Symbol,Int}
     rows, cols = size(grid)
     color_counter = Dict(:black => 0, :white => 0, :red => 0, :blue => 0)
@@ -43,6 +53,10 @@ function count_neighbor_colors(grid::Matrix{Cell}, r::Int, c::Int)::Dict{Symbol,
     return color_counter
 end
 
+"""
+This function updates the state of a cell based on the rules of the Infection Simulation.
+It returns a new Cell object with the updated color.
+"""
 function update_cell(current_grid::Matrix{Cell}, r::Int, c::Int)::Cell
     color_count = count_neighbor_colors(current_grid, r, c)
     current_color = current_grid[r, c].color
@@ -73,7 +87,10 @@ function update_cell(current_grid::Matrix{Cell}, r::Int, c::Int)::Cell
     return Cell(current_color)
 end
 
-
+"""
+This function updates the entire grid by iterating through each cell and applying the update rules.
+It returns a new grid with the updated cell states.
+"""
 function update_grid(current_grid::Matrix{Cell})::Matrix{Cell}
     rows, cols = size(current_grid)
     new_grid = fill(Cell(:white), rows, cols)
@@ -86,7 +103,10 @@ function update_grid(current_grid::Matrix{Cell})::Matrix{Cell}
     return new_grid
 end
 
-
+"""
+This function runs the Infection Simulation live, updating the grid and displaying it in real-time.
+It takes the number of rows, columns, generations, and an optional delay as parameters.
+"""
 function run_game_of_life_live(rows::Int, cols::Int, generations::Int,
     delay::Float64=0.1)
     grid = initialize_grid(rows, cols)
@@ -127,9 +147,12 @@ function run_game_of_life_live(rows::Int, cols::Int, generations::Int,
     println("Simulation completed after $generations generations.")
 end
 
-function create_game_of_life_gif(rows::Int, cols::Int, generations::Int,
-    filename::String="game_of_life.gif",
-    fps::Int=10)
+"""
+This function creates a GIF of the Infection Simulation.
+It takes the number of rows, columns, generations, frames per second and the filename as parameters.
+"""
+function create_game_of_life_gif(rows::Int, cols::Int, generations::Int, fps::Int=10,
+    filename::String="game_of_life.gif")
 
     grid = initialize_grid(rows, cols)
     println("Starting GIF creation for Conway's Game of Life...")
@@ -183,12 +206,15 @@ function create_game_of_life_gif(rows::Int, cols::Int, generations::Int,
     end
 end
 
+"""
+Here we define the parameters for the Infection Simulation.
+You can adjust the grid size, number of generations, and animation delay as needed.
+"""
 
 grid_rows = 100
 grid_cols = 100
 num_generations = 1000
 animation_delay = 0.01
-initial_density = 0.25
 
 run_game_of_life_live(grid_rows, grid_cols, num_generations, animation_delay)
-# create_game_of_life_gif(grid_rows, grid_cols, num_generations)
+# create_game_of_life_gif(grid_rows, grid_cols, num_generations, floor(Int, 1 / animation_delay), "infection_simulation.gif")

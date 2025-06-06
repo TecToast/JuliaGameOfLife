@@ -1,6 +1,10 @@
 using Plots
 gr()
 
+"""
+This function returns a grid (matrix) initialized with random live cells based on the specified density.
+It takes the number of rows, columns, and an optional density parameter (default is 0.3).
+"""
 function initialize_grid(rows::Int, cols::Int, density::Float64=0.3)::Matrix{Bool}
     grid = falses(rows, cols)
     for r in 1:rows
@@ -13,6 +17,10 @@ function initialize_grid(rows::Int, cols::Int, density::Float64=0.3)::Matrix{Boo
     return grid
 end
 
+"""
+This function counts the number of live neighbors around a cell at position (r, c) in the grid.
+It wraps around the edges of the grid.
+"""
 function count_live_neighbors(grid::Matrix{Bool}, r::Int, c::Int)::Int
     rows, cols = size(grid)
     count = 0
@@ -32,7 +40,10 @@ function count_live_neighbors(grid::Matrix{Bool}, r::Int, c::Int)::Int
     return count
 end
 
-
+"""
+This function updates the state of a cell based on the rules of Conway's Game of Life.
+It returns true if the cell is alive in the next generation, false otherwise.
+"""
 function update_cell(current_grid::Matrix{Bool}, r::Int, c::Int)::Bool
     live_neighbors = count_live_neighbors(current_grid, r, c)
     is_alive = current_grid[r, c]
@@ -44,6 +55,10 @@ function update_cell(current_grid::Matrix{Bool}, r::Int, c::Int)::Bool
     end
 end
 
+"""
+This function updates the entire grid based on the current state of the grid.
+It iterates through each cell and applies the update rules.
+"""
 function update_grid(current_grid::Matrix{Bool})::Matrix{Bool}
     rows, cols = size(current_grid)
 
@@ -57,8 +72,13 @@ function update_grid(current_grid::Matrix{Bool})::Matrix{Bool}
     return new_grid
 end
 
+"""
+This function runs a live simulation of Conway's Game of Life.
+It takes the number of rows, columns, generations, delay between generations, and an optional density parameter.
+It displays the grid at each generation using a heatmap.
+"""
 function run_game_of_life_live(rows::Int, cols::Int, generations::Int,
-    delay::Float64=0.1, density::Float64=0.3)
+    density::Float64=0.3, delay::Float64=0.1)
     grid = initialize_grid(rows, cols, density)
 
     println("Starting Conway's Game of Life simulation...")
@@ -86,11 +106,14 @@ function run_game_of_life_live(rows::Int, cols::Int, generations::Int,
     end
 end
 
-
-function create_game_of_life_gif(rows::Int, cols::Int, generations::Int,
-    filename::String="game_of_life.gif",
+"""
+This function also runs Conway's Game of Life but creates a GIF of the generations instead of displaying them live.
+It takes the number of rows, columns, generations, filename for the GIF, frames per second (fps), and an optional density parameter.
+"""
+function create_game_of_life_gif(rows::Int, cols::Int, generations::Int, density::Float64=0.3,
     fps::Int=10,
-    density::Float64=0.3)
+    filename::String="game_of_life.gif",
+)
 
     grid = initialize_grid(rows, cols, density)
     println("Starting GIF creation for Conway's Game of Life...")
@@ -122,6 +145,10 @@ function create_game_of_life_gif(rows::Int, cols::Int, generations::Int,
     end
 end
 
+"""
+Here we define the parameters for the Game of Life simulation.
+You can adjust the grid size, number of generations, animation delay, and initial density of live cells.
+"""
 
 grid_rows = 60
 grid_cols = 80
@@ -129,6 +156,9 @@ num_generations = 100
 animation_delay = 0.01
 initial_density = 0.25
 
+"""
+Here you can choose to run the live simulation or create a GIF.
+"""
 
-# run_game_of_life_live(grid_rows, grid_cols, num_generations, animation_delay, initial_density)
-create_game_of_life_gif(grid_rows, grid_cols, num_generations)
+run_game_of_life_live(grid_rows, grid_cols, num_generations, initial_density, animation_delay)
+# create_game_of_life_gif(grid_rows, grid_cols, num_generations, initial_density, floor(Int, 1 / animation_delay))

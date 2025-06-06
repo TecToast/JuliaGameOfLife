@@ -1,11 +1,18 @@
 using Plots
 gr()
 
+"""
+This function returns the state of a cell, based on its neighborhood and the given rule number.
+"""
 function apply_rule(left::Int, center::Int, right::Int, rule_number::Int)::Int
     neighborhood_value = left * 4 + center * 2 + right * 1
     return (rule_number >> neighborhood_value) & 1
 end
 
+"""
+This function simulates a 1D cellular automaton given an initial state, a rule number, and the number of generations.
+After the simulation, it returns the history of states.
+"""
 function simulate_ca(initial_state::Vector{Int}, rule_number::Int, num_generations::Int)::Vector{Vector{Int}}
     if rule_number < 0 || rule_number > 255
         error("The rule number must be between 0 and 255.")
@@ -32,7 +39,10 @@ function simulate_ca(initial_state::Vector{Int}, rule_number::Int, num_generatio
     return history
 end
 
-
+"""
+This function plots the history of a 1D cellular automaton simulation using the Plots.jl package.
+It takes a history of states, colors for alive and dead cells, and a title for the plot.
+"""
 function plot_ca_history(history::Vector{Vector{Int}};
     alive_color=:black, dead_color=:white,
     title="Cellular Automaton History")
@@ -65,6 +75,11 @@ function plot_ca_history(history::Vector{Vector{Int}};
     display(p)
 end
 
+"""
+Here we define the initial state, rule number, and number of generations for the simulation.
+We then simulate the cellular automaton and plot the results.
+The user can modify the initial state, rule number, and number of generations as needed.
+"""
 
 initial_state_plot = zeros(Int, 101)
 initial_state_plot[51] = 1

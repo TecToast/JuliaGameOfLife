@@ -130,6 +130,8 @@
 %
 %
 \begin{abstract}
+  Numerical simulation is a fundamental tool in science and engineering, enabling the study of complex systems that are difficult or impossible to analyze analytically.
+  Conway's Game of Life is a well-known example of a cellular automaton, illustrating how simple, local rules can generate complex, emergent behavior, and thus serves as a valuable study case for understanding simulation, complexity, and emergent phenomena.
   This paper gives an overview of Conway's Game of Life (and cellular automata in general) and some implementations of it in the Julia programming language.
   It is mostly based on Daniel Shiffman's Nature of Code \cite{NOC}.
 \end{abstract}
@@ -148,22 +150,21 @@ In this paper, we will explore the concept of cellular automata, focusing on Con
 \section{Cellular Automata}
 \subsection{Understanding cellular automata}
 \label{sec:cellular-automata-understanding}
-The cellular automata we are going to discuss in this paper are based on the concept of Stephen Wolfram, who has done extensive research on cellular automata and their behavior.
-A cellular automaton itself is a model consisting of cell objects, which have a few properties:
+The cellular automata we are going to discuss in this paper are based on the concept of Stephen Wolfram.
+A cellular automaton itself is a model consisting of cell objects, which have the following properties:
 \begin{itemize}
   \item All cells are arranged in a grid (1D, 2D, or even higher dimensions)
   \item Each cell has a state (the simplest case is a boolean state (1 or 0, alive or dead, ...), but it can also be an integer or even a more complex object)
   \item Each cell has a defined neighborhood (typically the cells directly adjacent to it, but it can also be more complex)
 \end{itemize}
-The last requirement is a function, that takes the neighborhood of a cell and returns the next state of the cell.
-Typically, this function is defined by a set of rules, which can be very simple or very complex.
+The last requirement is a function that takes the neighborhood of a cell and returns the next state of the cell.
+Typically, this function is defined by a set of rules (update rules), which can be very simple or very complex.
 In a 1D cellular automaton, the neighborhood of a cell is typically the cell itself and its two neighbors (left and right).
 In this case, there are $2^3=8$ possible configurations of the neighborhood (including the cell itself).
 Therefore, the ruleset can be represented by 8 bits, where each bit represents the next state of the cell for a specific configuration of the neighborhood.
 These 8 bits can be interpreted as a number in the range $0$ to $255$, which is the so-called \textit{rule number} of the cellular automaton.
 Conventionally, the leftmost bit represents the state if neighborhood is 111 (all three neighbors are alive), the next bit represents the state if the neighborhood is 110, and so on, until the rightmost bit represents the state if the neighborhood is 000 (all three neighbors are dead).
 \subsection{Graphical representation of 1D cellular automata}
-\imagewithwidth{figures/rule90}{\textwidth}{fig:grid1}{The first 30 generations of Rule 90 (=1011010) visualized as a stack of generations (if the starting configuration is just a single alive cell in the middle of the grid) beginning at the top of the grid\\Source: \url{https://natureofcode.com/static/ce7e94b17a9690f8b4182e120755263f/2c91d/07_ca_22.webp}}{}
 Until now, we have only discussed the theory of cellular automata, but how can we visualize them?
 The simplest way is to use a 1D array of cells, where each cell is represented by a pixel.
 The state of the cell can be represented by the color of the pixel (e.g., black for alive and white for dead).
@@ -171,6 +172,7 @@ This way, we can visualize the state of the cellular automaton at a specific tim
 In a 1D cellular automaton, we can also visualize the history of the cellular automaton by displaying the state of the cellular automaton at each time step in a 2D grid.
 This way, we can see how the state of the cellular automaton evolves over time.
 An example of such a visualization is shown in \autoref{fig:grid1}.
+\imagewithwidth{figures/rule90}{\textwidth}{fig:grid1}{The first 30 generations of Rule 90 (=1011010) visualized as a stack of generations (if the starting configuration is just a single alive cell in the middle of the grid) beginning at the top of the grid\\Source: \url{https://natureofcode.com/static/ce7e94b17a9690f8b4182e120755263f/2c91d/07_ca_22.webp}}{}
 \clearpage
 \subsection{Wolfram Classification}
 We now have a basic understanding of cellular automata and how they can be visualized.
@@ -183,7 +185,7 @@ Stephen Wolfram classified the behavior of cellular automata into four classes:
   \item \textbf{Class 4: Complexity} - Sort of a mix between Class 2 and Class 3, where the system exhibits both periodic and chaotic behavior.
 \end{itemize}
 \autoref{fig:grid1} is an example of a Class 4 cellular automaton.
-\subsection{Jump to 2D cellular automata (Game of Life)}
+\subsection{2D cellular automata (Game of Life)}
 As already mentioned, a cellular automaton can also be defined in a grid of higher dimensions.
 When going to two dimensions, the general idea stays the same, but the neighborhood of a cell is defined a bit differently, as the neighborhood of a single cell consists of 9 cells (the cell itself and the 8 cells surrounding it).
 There would be $2^9=512$ possible configurations of the neighborhood, which would lead to a ruleset of 512 bits (if we would also use a rule number here, the maximum number would be $2^{512} - 1 \approx 1.34 \times 10^{154}$).
@@ -209,9 +211,9 @@ There are many interesting patterns (formations of alive cells) in the Game of L
   \item \textbf{Spaceships}: These patterns seem to move across the grid (See \autoref{fig:spaceship}). In reality, it is just a periodic change of the pattern, which gives the impression of movement.
   \item \textbf{Guns}: These patterns produce ("shoot") other patterns, typically spaceships, in a periodic manner. They are designed in such a way that they create a new pattern at regular intervals while maintaining their own structure.
 \end{itemize}
-Whats interesting about these patterns (or generally all patterns) is that they can be used to create complex structures,
+An interesting observation about these patterns (or generally all patterns) is that they can be used to create complex structures,
 but they are also very sensitive to external influences. Even if a single cell is changed, the whole pattern can change drastically (often leading to a complete extinction of the pattern).
-This matches the sensibility of complex systems in the real world, where small changes can lead to large effects.
+This matches the sensitivity of complex systems in the real world, where small changes can lead to large effects.
 \imagewithwidth{figures/stable}{0.7\textwidth}{fig:stable}{Examples for stable formations\\Source: \url{https://natureofcode.com/static/4f9158d65163cbbb8fa41030a2000079/e80fe/07_ca_29.webp}}{}
 \imagewithwidth{figures/oscillator}{0.7\textwidth}{fig:oscillator}{Examples for oscillators\\Source: \url{https://natureofcode.com/static/04f7903e1010ffd716e12c5c86785894/d4cd6/07_ca_30.webp}}{}
 \imagewithwidth{figures/spaceship}{0.7\textwidth}{fig:spaceship}{Examples for spaceships\\Source: \url{https://natureofcode.com/static/bbac4c485b936395226f8b6addd24e19/46ba6/07_ca_31.webp}}{}
@@ -220,12 +222,13 @@ This matches the sensibility of complex systems in the real world, where small c
 \subsection{Implementation of 1D in Julia}
 First, I want to implement the most basic version of a 1D cellular automaton in Julia.
 This will serve as a foundation for understanding the principles of cellular automata and how they can be implemented in Julia.
-The final code for this implementation will be available on GitHub here: \url{https://github.com/TecToast/JuliaGameOfLife/blob/main/code/cellular_1D.jl}.
+The graphical representation of the cellular automatons is done using the \texttt{Plots} package \cite{JuliaPlots}, using the \texttt{GR} \cite{JuliaGR,GR} backend.
+The final code for this implementation will be available on GitHub here\footnote{\url{https://github.com/TecToast/JuliaGameOfLife/blob/main/code/cellular_1D.jl}}.
 As explained in \autoref{sec:cellular-automata-understanding}, a 1D cellular automaton can be represented by a 1D array of cells, where each cell is represented by a pixel.
-We need a function, that takes the neighborhood of a cell and returns the next state of the cell, based on the ruleset (defined by the rule number).
+We need a function that takes the neighborhood of a cell and returns the next state of the cell, based on the ruleset (defined by the rule number).
 As previously mentioned, the rulenumber can be represented by an 8-bit number, where each bit represents the next state of the cell for a specific configuration of the neighborhood.
-To check the next state of a cell, we convert the neighborhood of cell into a number and shift the rulenumber by this number of bits to the right. The least significant bit of the result is the next state of the cell.
-The main part ist the \texttt{simulate\_ca} function, which takes the initial state, the rule number and the number of generations and returns all the generated states as a vector of vectors.
+To check the next state of a cell, we convert the neighborhood of a cell into a number and shift the rulenumber by this number of bits to the right. The least significant bit of the result is the next state of the cell.
+The main part is the \texttt{simulate\_ca} function, which takes the initial state, the rule number and the number of generations and returns all the generated states as a vector of vectors.
 This history can then be visualized by displaying the state of the cellular automaton at each time step in a 2D grid, which can be done using the \texttt{plot\_ca\_history} function.
 \autoref{fig:carule89} shows the result of the implementation of Rule 89 with 101 cells and 50 generations, where the starting state is a single alive cell in the middle of the grid.
 \imagewithwidth{figures/carule89}{0.9\textwidth}{fig:carule89}{Generated diagram of Rule 89 with 101 Cells, 50 Generations}{}
@@ -239,24 +242,24 @@ The Julia implementation differentiates between two rendering modes:
   \item \textbf{GIF} (using the \texttt{create\_game\_of\_life\_gif} method): The frames are saved as a GIF file, which can be viewed later. This is useful for longer simulations or for sharing the results with others.
 \end{itemize}
 The most simple way to implement the Game of Life is to use a boolean matrix, where each cell is either alive (1) or dead (0).
-This approach can be found under the following url: \url{https://github.com/TecToast/JuliaGameOfLife/blob/main/code/gameoflife.jl}.
+This approach can be found under the url in the footnote\footnote{\url{https://github.com/TecToast/JuliaGameOfLife/blob/main/code/gameoflife.jl}}.
 First, we initialize the grid with a random state, where each cell has a default chance of 30\% to be alive.
 In each iteration, we iterate over all cells and check the number of alive neighbors and set the next state of the cell based on the default rules of the Game of Life.
 The neat thing about this implementation is that it can be easily extended to support different rulesets, by simply changing the \texttt{update\_cell} function.
 There is also no reason why the cells have to be boolean, they can also be integers or even more complex objects.
-The most common starting configuration is a random state, where you can define the chance of a cell to be alive (also called density).
-Here is a Game of Life simulation with an density of 0.25 and 1000 generations, generated by this Julia implementation: \url{https://github.com/TecToast/JuliaGameOfLife/blob/main/gifs/game_of_life.gif}
-\subsection{Extended implementation of 2D cellular automata (Infection Simulation)}
-In the previous section, we implemented a simple version of the Game of Life using a boolean matrix.
+The most common starting configuration is a random state, where the user can define the chance of a cell to be alive (also called density).
+Here is a Game of Life simulation with a density of 0.25 and 1000 generations, generated the Julia implementation in the footnote\footnote{\url{https://github.com/TecToast/JuliaGameOfLife/blob/main/gifs/game_of_life.gif}}.
+\subsection{Application: Infection Simulation}
+In the previous section, I implemented a simple version of the Game of Life using a boolean matrix.
 However, this implementation is quite limited, as it only allows for two states (alive and dead) and does not allow for more complex interactions between cells.
 We have multiple options to extend the Game of Life to support more complex interactions between cells.
 One option is to use a more complex data structure for the cells, which allows for more properties and behaviors.
 Another option is to bring in randomness into the ruleset (e.g., by using probabilities for the next state of the cell), as the neighborhood ``function'' doesn't have to be deterministic.
 I created a more complex implementation, which uses a custom \texttt{Cell} type, which currently only has a color property, but can be extended to have more properties in the future.
-The code for this implementation can be found here: \url{https://github.com/TecToast/JuliaGameOfLife/blob/main/code/gameoflife_extended.jl}.
+The code for this implementation can be found here\footnote{\url{https://github.com/TecToast/JuliaGameOfLife/blob/main/code/gameoflife_extended.jl}}.
 The previous implementation has to be adjusted (especially the rendering to make use of multiple colors) to use the \texttt{Cell} type, but the core idea is the same as for the boolean matrix.
 In contrast to the default Game of Life, which was rather abstract, this implementation allows for more real simulations of complex systems, such as biological systems, where each cell can have different properties and behaviors.
-One example of such a simulation is a \emph{Infection Simulation}, where we have two types of cells: infected and healthy.
+One example of such a simulation is an \emph{Infection Simulation}, where we have two types of cells: infected and healthy.
 The infected cells spread the infection to the healthy cells, while the healthy cells can reproduce, leading to a complex interaction between the two types of cells.
 In my example, I initialized the grid with 35\% of healthy cells (blue) and 15\% of infected cells (red). I specified the rules to be as follows:
 \begin{itemize}
@@ -280,19 +283,18 @@ In my example, I initialized the grid with 35\% of healthy cells (blue) and 15\%
           \item Otherwise, it stays dead.
         \end{itemize}
 \end{itemize}
-If you run the simulation, you will see how the cells are sort of fighting each other, with the infected cells spreading the infection to the healthy cells, while the healthy cells try to survive and reproduce.
-The simulation for 1000 generations can be found here: \url{https://github.com/TecToast/JuliaGameOfLife/blob/main/gifs/infection_simulation.gif}. The end frame of this specific simulation can be seen in \autoref{fig:infection_frame_1000}.
+If you run the simulation, you will see how the cells seem like they are fighting each other, with the infected cells spreading the infection to the healthy cells, while the healthy cells try to survive and reproduce.
+The simulation for 1000 generations can be found here\footnote{\url{https://github.com/TecToast/JuliaGameOfLife/blob/main/gifs/infection_simulation.gif}}. The end frame of this specific simulation can be seen in \autoref{fig:infection_frame_1000}.
 We can observe that the healthy cells (blue) form a pipe like structure, while the infected cells (red) form are more clumped together and are almost always connected to healthy cells (as soon as this is not the case, it is just a matter of time that they die, as they can't reproduce themselves).
 The start configuration of the Infection Simulation can be seen in \autoref{fig:infection_frame_1}.
 \imagewithwidth{figures/infection_frame_1000}{0.8\textwidth}{fig:infection_frame_1000}{Infection Simulation after 1000 generations}{}
 \imagewithwidth{figures/infection_frame_1}{0.8\textwidth}{fig:infection_frame_1}{Initial state of the Infection Simulation, with 35\% healthy cells (blue) and 15\% infected cells (red) at the beginning. The rest of the cells are dead (white). The rules are explained in the text.}{}
 \subsection{Comparison with other programming languages}
-The implementation of the Game of Life in Julia is quite straightforward and similar to other programming languages, such as Python or JavaScript.
-However, Julia has some advantages over other languages, such as:
+When comparing the implementation of the Game of Life in Julia to other programming languages such as Python or JavaScript, several objective differences can be observed:
 \begin{itemize}
-  \item \textbf{Performance:} Julia is designed for high-performance numerical computing and can handle large arrays and matrices efficiently.
-  \item \textbf{Ease of Use:} Julia has a simple and intuitive syntax, which makes it easy to write and read code.
-  \item \textbf{Rich Ecosystem:} Julia has a rich ecosystem of packages, which makes it easy to find libraries for specific tasks, such as plotting or image processing.
+  \item \textbf{Performance:} Julia is designed for high-performance numerical computing and can approach or match the speed of C for array and matrix operations, which is beneficial for large-scale simulations.
+  \item \textbf{Syntax:} Julia's syntax is concise and expressive, allowing for mathematical operations and array manipulations to be written in a style similar to mathematical notation, which can reduce code verbosity compared to languages like JavaScript.
+  \item \textbf{Ecosystem:} Julia provides a growing ecosystem of packages for scientific computing, visualization, and data processing, such as \texttt{Plots.jl}, which facilitate rapid prototyping and visualization of simulation results.
 \end{itemize}
 Especially the performance aspect is important for simulations, as they often involve large arrays and matrices,
 which can be computationally expensive to process, if you want to simulate thousands or even millions of generations.
@@ -302,7 +304,8 @@ In this section, we will discuss how simulations using cellular automata relates
 Partial Differential Equations (PDEs) are a powerful tool for modeling continuous systems, such as fluid dynamics, heat transfer, and wave propagation.
 However, they can be difficult to solve analytically and often require numerical methods for their solution.
 Cellular automata, on the other hand, are discrete models that can be used to simulate systems with local interactions.
-While they are not a direct replacement for PDEs, they can be used to model systems that exhibit similar behavior.
+While they are not a direct replacement for PDEs, they can be used to model systems that exhibit similar behavior.\\
+\textit{This section will be extended}
 
 \section{Conclusions}
 In this paper, we explored the fundamental concepts of cellular automata, with a particular focus on Conway's Game of Life,
