@@ -132,7 +132,7 @@
 \begin{abstract}
   Numerical simulation is a fundamental tool in science and engineering, enabling the study of complex systems that are difficult or impossible to analyze analytically.
   Conway's Game of Life is a well-known example of a cellular automaton, illustrating how simple, local rules can generate complex, emergent behavior, and thus serves as a valuable study case for understanding simulation, complexity, and emergent phenomena.
-  This paper gives an overview of Conway's Game of Life (and cellular automata in general) and some implementations of it in the Julia programming language.
+  This paper gives an overview of Conway's Game of Life (and cellular automata in general), how these can be used for simulation purposes, and some implementations of it in the Julia programming language, while also explaining why Julia is a suitable language for such simulations.
   It is mostly based on Daniel Shiffman's Nature of Code \cite{NOC}.
 \end{abstract}
 
@@ -141,13 +141,14 @@
 \section{Introduction}
 The study of complex systems often begins with simple rules.
 Cellular automata, introduced by John von Neumann and later popularized by Stephen Wolfram, are a prime example of how simple, local interactions can lead to surprisingly rich and varied global behavior.
-These models have become a cornerstone in the field of simulations, providing insight into phenomena ranging from biological growth to traffic flow and even the spread of diseases.
+These models have become a cornerstone in the field of simulations, providing insight into phenomena ranging from real-world urban processes \cite{SANTE2010108} to physics simulations \cite{VICHNIAC198496} and even the spread of diseases \cite{SLIMI20091072}.
 Simulations are essential tools in science and engineering, allowing us to explore the behavior of systems that are too complex, dangerous, or expensive to experiment with directly.
 Cellular automata offer a unique approach to simulation: instead of relying on continuous equations, they use discrete states and local update rules.
 This makes them particularly well-suited for modeling systems where individual components interact in simple, repetitive ways.
-In this paper, we will explore the concept of cellular automata, focusing on Conway's Game of Life, and implement it in the Julia programming language.
+In this paper, we will explore the general concept of cellular automata, beginning from the ground up. We will focus especially on Conway's Game of Life as a particular example, and implement multiple variations of cellular automatas in the Julia programming language.
 
 \section{Cellular Automata}
+The explanations in this section are based on Daniel Shiffman's Nature of Code \cite{NOC}, which is a great resource for understanding the concept of cellular automata and how they can be implemented in code.
 \subsection{Understanding cellular automata}
 \label{sec:cellular-automata-understanding}
 The cellular automata we are going to discuss in this paper are based on the concept of Stephen Wolfram.
@@ -163,7 +164,9 @@ In a 1D cellular automaton, the neighborhood of a cell is typically the cell its
 In this case, there are $2^3=8$ possible configurations of the neighborhood (including the cell itself).
 Therefore, the ruleset can be represented by 8 bits, where each bit represents the next state of the cell for a specific configuration of the neighborhood.
 These 8 bits can be interpreted as a number in the range $0$ to $255$, which is the so-called \textit{rule number} of the cellular automaton.
-Conventionally, the leftmost bit represents the state if neighborhood is 111 (all three neighbors are alive), the next bit represents the state if the neighborhood is 110, and so on, until the rightmost bit represents the state if the neighborhood is 000 (all three neighbors are dead).
+Conventionally, the leftmost bit of the rule number represents the state if neighborhood is 111 (all three neighbors are alive), the next bit represents the state if the neighborhood is 110, and so on, until the rightmost bit represents the state if the neighborhood is 000 (all three neighbors are dead).
+A graphical representation of this is shown in \autoref{fig:ruleset}.
+\imagewithwidth{figures/ruleset_example}{0.7\textwidth}{fig:ruleset}{Each possible configuration of a neighborhood is mapped to the outcome of the cell in the next generation. For example, if the left neighbor of a cell is alive and the right cell and the cell itself are dead (100), then the cell would be alive in the next iteration. These 8 bits can be interpreted as a binary number (01011010 in this case), which represents the decimal number 90.\\Source: \url{https://natureofcode.com/static/0ac0651f748517bd2a6f8520fcbda74f/eaf0e/07_ca_9.webp}}{}
 \subsection{Graphical representation of 1D cellular automata}
 Until now, we have only discussed the theory of cellular automata, but how can we visualize them?
 The simplest way is to use a 1D array of cells, where each cell is represented by a pixel.
@@ -172,8 +175,7 @@ This way, we can visualize the state of the cellular automaton at a specific tim
 In a 1D cellular automaton, we can also visualize the history of the cellular automaton by displaying the state of the cellular automaton at each time step in a 2D grid.
 This way, we can see how the state of the cellular automaton evolves over time.
 An example of such a visualization is shown in \autoref{fig:grid1}.
-\imagewithwidth{figures/rule90}{\textwidth}{fig:grid1}{The first 30 generations of Rule 90 (=1011010) visualized as a stack of generations (if the starting configuration is just a single alive cell in the middle of the grid) beginning at the top of the grid\\Source: \url{https://natureofcode.com/static/ce7e94b17a9690f8b4182e120755263f/2c91d/07_ca_22.webp}}{}
-\clearpage
+\imagewithwidth{figures/rule90}{0.7\textwidth}{fig:grid1}{The first 63 generations of Rule 90 (=1011010) visualized as a stack of generations (if the starting configuration is just a single alive cell in the middle of the grid) beginning at the top of the grid}{}
 \subsection{Wolfram Classification}
 We now have a basic understanding of cellular automata and how they can be visualized.
 By providing various rule numbers, we can see different behaviors of the cellular automaton.
@@ -184,7 +186,9 @@ Stephen Wolfram classified the behavior of cellular automata into four classes:
   \item \textbf{Class 3: Random} - The system evolves to a chaotic state, where the cells change their state in a seemingly random manner.
   \item \textbf{Class 4: Complexity} - Sort of a mix between Class 2 and Class 3, where the system exhibits both periodic and chaotic behavior.
 \end{itemize}
-\autoref{fig:grid1} is an example of a Class 4 cellular automaton.
+\autoref{fig:grid1} is an example of a Class 4 cellular automaton, because it shows repetitive patterns (triangles), while also exhibiting chaotic behavior (if we look one particular cell, there is no obvious pattern). In particular, this cellular automaton (if started with one alive cell) generates a fractal which is known as the \textbf{Sierpiński triangle}.
+Rule 1 is an example of a Class 2 cellular automaton, which can be seen in \autoref{fig:rule1}.
+\imagewithwidth{figures/rule1}{0.7\textwidth}{fig:rule1}{The first 63 generations of Rule 1 (=0000001) visualized as a stack of generations (if the starting configuration is just a single alive cell in the middle of the grid) beginning at the top of the grid}{}
 \subsection{2D cellular automata (Game of Life)}
 As already mentioned, a cellular automaton can also be defined in a grid of higher dimensions.
 When going to two dimensions, the general idea stays the same, but the neighborhood of a cell is defined a bit differently, as the neighborhood of a single cell consists of 9 cells (the cell itself and the 8 cells surrounding it).
@@ -214,9 +218,9 @@ There are many interesting patterns (formations of alive cells) in the Game of L
 An interesting observation about these patterns (or generally all patterns) is that they can be used to create complex structures,
 but they are also very sensitive to external influences. Even if a single cell is changed, the whole pattern can change drastically (often leading to a complete extinction of the pattern).
 This matches the sensitivity of complex systems in the real world, where small changes can lead to large effects.
-\imagewithwidth{figures/stable}{0.7\textwidth}{fig:stable}{Examples for stable formations\\Source: \url{https://natureofcode.com/static/4f9158d65163cbbb8fa41030a2000079/e80fe/07_ca_29.webp}}{}
-\imagewithwidth{figures/oscillator}{0.7\textwidth}{fig:oscillator}{Examples for oscillators\\Source: \url{https://natureofcode.com/static/04f7903e1010ffd716e12c5c86785894/d4cd6/07_ca_30.webp}}{}
-\imagewithwidth{figures/spaceship}{0.7\textwidth}{fig:spaceship}{Examples for spaceships\\Source: \url{https://natureofcode.com/static/bbac4c485b936395226f8b6addd24e19/46ba6/07_ca_31.webp}}{}
+\imagewithwidth{figures/stable}{0.5\textwidth}{fig:stable}{Examples for stable formations\\Source: \url{https://natureofcode.com/static/4f9158d65163cbbb8fa41030a2000079/e80fe/07_ca_29.webp}}{}
+\imagewithwidth{figures/oscillator}{0.5\textwidth}{fig:oscillator}{Examples for oscillators\\Source: \url{https://natureofcode.com/static/04f7903e1010ffd716e12c5c86785894/d4cd6/07_ca_30.webp}}{}
+\imagewithwidth{figures/spaceship}{0.5\textwidth}{fig:spaceship}{Examples for spaceships\\Source: \url{https://natureofcode.com/static/bbac4c485b936395226f8b6addd24e19/46ba6/07_ca_31.webp}}{}
 
 \section{Implementation}
 \subsection{Implementation of 1D in Julia}
@@ -265,21 +269,21 @@ In my example, I initialized the grid with 35\% of healthy cells (blue) and 15\%
 \begin{itemize}
   \item \textbf{Healthy Rules:}
         \begin{itemize}
-          \item If a healthy cell has 1 infected neighbor, it has a 20\% chance of becoming infected.
-          \item If a healthy cell has 2 infected neighbors, it has a 40\% chance of becoming infected.
-          \item If a healthy cell has more than 2 infected neighbors, it is guaranteed to become infected.
-          \item If a healthy cell has less than 2 or more than 5 infected neighbors, it dies.
+          \item If a healthy cell has 1 infected neighbor, it has a 20\% chance of becoming infected. (spread of infection)
+          \item If a healthy cell has 2 infected neighbors, it has a 40\% chance of becoming infected. (spread of infection)
+          \item If a healthy cell has more than 2 infected neighbors, it is guaranteed to become infected. (spread of infection)
+          \item If a healthy cell has less than 2 or more than 5 healthy neighbors, it dies. (under/overpopulation)
           \item Otherwise, it stays healthy.
         \end{itemize}
   \item \textbf{Infected Rules:}
         \begin{itemize}
-          \item If a cell is infected, it has a 1\% chance of dying.
-          \item If an infected cell has less than 3 or more than 6 infected neighbors, it dies.
+          \item If a cell is infected, it has a 1\% chance of dying. (natural death)
+          \item If an infected cell has less than 3 or more than 6 infected neighbors, it dies. (under/overpopulation)
           \item Otherwise, it stays infected.
         \end{itemize}
   \item \textbf{Dead Rules:}
         \begin{itemize}
-          \item If a cell is dead and has exactly 3 healthy neighbors, it becomes healthy.
+          \item If a cell is dead and has exactly 3 healthy neighbors, it becomes healthy. (reproduction)
           \item Otherwise, it stays dead.
         \end{itemize}
 \end{itemize}

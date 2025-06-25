@@ -81,12 +81,12 @@ We then simulate the cellular automaton and plot the results.
 The user can modify the initial state, rule number, and number of generations as needed.
 """
 
-initial_state_plot = zeros(Int, 101)
-initial_state_plot[51] = 1
+initial_state_plot = zeros(Int, 126)
+initial_state_plot[63] = 1
 
 rule_number_plot = 1
 
-num_generations_plot = 50
+num_generations_plot = 63
 
 history = simulate_ca(initial_state_plot, rule_number_plot, num_generations_plot)
 
