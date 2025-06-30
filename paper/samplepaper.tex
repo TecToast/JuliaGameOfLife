@@ -31,6 +31,29 @@
 \usepackage{listings}               % source code
 \usepackage{tikz}                   % custom (vector) graphics
 \usetikzlibrary{shapes, arrows.meta, positioning, decorations.pathreplacing, trees, patterns, calligraphy}
+
+\lstdefinelanguage{Julia}%
+  {morekeywords={abstract,break,case,catch,const,continue,do,else,elseif,%
+      end,export,false,for,function,immutable,import,importall,if,in,%
+      macro,module,otherwise,quote,return,switch,true,try,type,typealias,%
+      using,while},%
+   sensitive=true,%
+   alsoother={$},%
+   morecomment=[l]\#,%
+   morecomment=[n]{\#=}{=\#},%
+   morestring=[s]{"}{"},%
+   morestring=[m]{'}{'},%
+}[keywords,comments,strings]%
+
+\lstset{%
+    language         = Julia,
+    basicstyle       = \ttfamily,
+    keywordstyle     = \bfseries\color{blue},
+    stringstyle      = \color{magenta},
+    commentstyle     = \color{ForestGreen},
+    showstringspaces = false,
+}
+
 %
 % pseudo-code
 \usepackage{algorithm} 
@@ -175,7 +198,7 @@ This way, we can visualize the state of the cellular automaton at a specific tim
 In a 1D cellular automaton, we can also visualize the history of the cellular automaton by displaying the state of the cellular automaton at each time step in a 2D grid.
 This way, we can see how the state of the cellular automaton evolves over time.
 An example of such a visualization is shown in \autoref{fig:grid1}.
-\imagewithwidth{figures/rule90}{0.7\textwidth}{fig:grid1}{The first 63 generations of Rule 90 (=1011010) visualized as a stack of generations (if the starting configuration is just a single alive cell in the middle of the grid) beginning at the top of the grid}{}
+\imagewithwidth{figures/rule90}{0.5\textwidth}{fig:grid1}{The first 63 generations of Rule 90 (=1011010) visualized as a stack of generations (if the starting configuration is just a single alive cell in the middle of the grid) beginning at the top of the grid}{}
 \subsection{Wolfram Classification}
 We now have a basic understanding of cellular automata and how they can be visualized.
 By providing various rule numbers, we can see different behaviors of the cellular automaton.
@@ -215,6 +238,7 @@ There are many interesting patterns (formations of alive cells) in the Game of L
   \item \textbf{Spaceships}: These patterns seem to move across the grid (See \autoref{fig:spaceship}). In reality, it is just a periodic change of the pattern, which gives the impression of movement.
   \item \textbf{Guns}: These patterns produce ("shoot") other patterns, typically spaceships, in a periodic manner. They are designed in such a way that they create a new pattern at regular intervals while maintaining their own structure.
 \end{itemize}
+A GIF with multiple of these patterns can be found in the footnote\footnote{\url{https://upload.wikimedia.org/wikipedia/commons/e/e5/Gospers_glider_gun.gif}}.
 An interesting observation about these patterns (or generally all patterns) is that they can be used to create complex structures,
 but they are also very sensitive to external influences. Even if a single cell is changed, the whole pattern can change drastically (often leading to a complete extinction of the pattern).
 This matches the sensitivity of complex systems in the real world, where small changes can lead to large effects.
@@ -229,13 +253,16 @@ This will serve as a foundation for understanding the principles of cellular aut
 The graphical representation of the cellular automatons is done using the \texttt{Plots} package \cite{JuliaPlots}, using the \texttt{GR} \cite{JuliaGR,GR} backend.
 The final code for this implementation will be available on GitHub here\footnote{\url{https://github.com/TecToast/JuliaGameOfLife/blob/main/code/cellular_1D.jl}}.
 As explained in \autoref{sec:cellular-automata-understanding}, a 1D cellular automaton can be represented by a 1D array of cells, where each cell is represented by a pixel.
-We need a function that takes the neighborhood of a cell and returns the next state of the cell, based on the ruleset (defined by the rule number).
-As previously mentioned, the rulenumber can be represented by an 8-bit number, where each bit represents the next state of the cell for a specific configuration of the neighborhood.
-To check the next state of a cell, we convert the neighborhood of a cell into a number and shift the rulenumber by this number of bits to the right. The least significant bit of the result is the next state of the cell.
+We need a function that takes the neighborhood of a cell and returns the next state of the cell, based on the ruleset (defined by the rule number). I called this function \texttt{apply\_rule}.
+As previously mentioned, the rule number can be represented by an 8-bit number, where each bit represents the next state of the cell for a specific configuration of the neighborhood.
+This was already explained in detail in \autoref{sec:cellular-automata-understanding}.
+To check the next state of a cell, we convert the neighborhood of a cell into a number and shift the rule number by this number of bits to the right. Now, the bit that we are looking for is the rightmost bit of the shifted rule number, so we just need to check if this bit is set (1) or not (0).
+This is done by using the bitwise AND operator (\texttt{\&}) with 1. The result is either 1 if the bit was set or 0 if it was not.
+For example, if the rule number is 90 (which is 1011010 in binary) and the neighborhood of a cell is 100 (which is 4 in decimal), the shifted rule number would be 101. The rightmost bit is set, so the cell would be alive in the next generation.
 The main part is the \texttt{simulate\_ca} function, which takes the initial state, the rule number and the number of generations and returns all the generated states as a vector of vectors.
 This history can then be visualized by displaying the state of the cellular automaton at each time step in a 2D grid, which can be done using the \texttt{plot\_ca\_history} function.
 \autoref{fig:carule89} shows the result of the implementation of Rule 89 with 101 cells and 50 generations, where the starting state is a single alive cell in the middle of the grid.
-\imagewithwidth{figures/carule89}{0.9\textwidth}{fig:carule89}{Generated diagram of Rule 89 with 101 Cells, 50 Generations}{}
+\imagewithwidth{figures/carule89}{0.6\textwidth}{fig:carule89}{Generated diagram of Rule 89 with 101 Cells, 50 Generations}{}
 
 \subsection{Implementation of 2D (Game of Life) in Julia}
 The core idea of the 2D cellular automaton is the same as for the 1D cellular automaton, but the neighborhood of a cell is defined differently.
@@ -291,8 +318,8 @@ If you run the simulation, you will see how the cells seem like they are fightin
 The simulation for 1000 generations can be found here\footnote{\url{https://github.com/TecToast/JuliaGameOfLife/blob/main/gifs/infection_simulation.gif}}. The end frame of this specific simulation can be seen in \autoref{fig:infection_frame_1000}.
 We can observe that the healthy cells (blue) form a pipe like structure, while the infected cells (red) form are more clumped together and are almost always connected to healthy cells (as soon as this is not the case, it is just a matter of time that they die, as they can't reproduce themselves).
 The start configuration of the Infection Simulation can be seen in \autoref{fig:infection_frame_1}.
-\imagewithwidth{figures/infection_frame_1000}{0.8\textwidth}{fig:infection_frame_1000}{Infection Simulation after 1000 generations}{}
-\imagewithwidth{figures/infection_frame_1}{0.8\textwidth}{fig:infection_frame_1}{Initial state of the Infection Simulation, with 35\% healthy cells (blue) and 15\% infected cells (red) at the beginning. The rest of the cells are dead (white). The rules are explained in the text.}{}
+\imagewithwidth{figures/infection_frame_1}{0.5\textwidth}{fig:infection_frame_1}{Initial state of the Infection Simulation, with 35\% healthy cells (blue) and 15\% infected cells (red) at the beginning. The rest of the cells are dead (white). The rules are explained in the text.}{}
+\imagewithwidth{figures/infection_frame_1000}{0.5\textwidth}{fig:infection_frame_1000}{Infection Simulation after 1000 generations}{}
 \subsection{Comparison with other programming languages}
 When comparing the implementation of the Game of Life in Julia to other programming languages such as Python or JavaScript, several objective differences can be observed:
 \begin{itemize}
