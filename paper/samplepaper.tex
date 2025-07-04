@@ -189,7 +189,7 @@ Therefore, the ruleset can be represented by 8 bits, where each bit represents t
 These 8 bits can be interpreted as a number in the range $0$ to $255$, which is the so-called \textit{rule number} of the cellular automaton.
 Conventionally, the leftmost bit of the rule number represents the state if neighborhood is 111 (all three neighbors are alive), the next bit represents the state if the neighborhood is 110, and so on, until the rightmost bit represents the state if the neighborhood is 000 (all three neighbors are dead).
 A graphical representation of this is shown in \autoref{fig:ruleset}.
-\imagewithwidth{figures/ruleset_example}{0.7\textwidth}{fig:ruleset}{Each possible configuration of a neighborhood is mapped to the outcome of the cell in the next generation. For example, if the left neighbor of a cell is alive and the right cell and the cell itself are dead (100), then the cell would be alive in the next iteration. These 8 bits can be interpreted as a binary number (01011010 in this case), which represents the decimal number 90.\\Source: \url{https://natureofcode.com/static/0ac0651f748517bd2a6f8520fcbda74f/eaf0e/07_ca_9.webp}}{}
+\imagewithwidth{figures/ruleset_example}{0.6\textwidth}{fig:ruleset}{Each possible configuration of a neighborhood is mapped to the outcome of the cell in the next generation. For example, if the left neighbor of a cell is alive and the right cell and the cell itself are dead (100), then the cell would be alive in the next iteration. These 8 bits can be interpreted as a binary number (01011010 in this case), which represents the decimal number 90.\\Source: \url{https://natureofcode.com/static/0ac0651f748517bd2a6f8520fcbda74f/eaf0e/07_ca_9.webp}}{}
 \subsection{Graphical representation of 1D cellular automata}
 Until now, we have only discussed the theory of cellular automata, but how can we visualize them?
 The simplest way is to use a 1D array of cells, where each cell is represented by a pixel.
@@ -198,7 +198,7 @@ This way, we can visualize the state of the cellular automaton at a specific tim
 In a 1D cellular automaton, we can also visualize the history of the cellular automaton by displaying the state of the cellular automaton at each time step in a 2D grid.
 This way, we can see how the state of the cellular automaton evolves over time.
 An example of such a visualization is shown in \autoref{fig:grid1}.
-\imagewithwidth{figures/rule90}{0.5\textwidth}{fig:grid1}{The first 63 generations of Rule 90 (=1011010) visualized as a stack of generations (if the starting configuration is just a single alive cell in the middle of the grid) beginning at the top of the grid}{}
+\imagewithwidth{figures/rule90}{0.4\textwidth}{fig:grid1}{The first 63 generations of Rule 90 (=1011010) visualized as a stack of generations (if the starting configuration is just a single alive cell in the middle of the grid) beginning at the top of the grid}{}
 \subsection{Wolfram Classification}
 We now have a basic understanding of cellular automata and how they can be visualized.
 By providing various rule numbers, we can see different behaviors of the cellular automaton.
@@ -211,7 +211,7 @@ Stephen Wolfram classified the behavior of cellular automata into four classes:
 \end{itemize}
 \autoref{fig:grid1} is an example of a Class 4 cellular automaton, because it shows repetitive patterns (triangles), while also exhibiting chaotic behavior (if we look one particular cell, there is no obvious pattern). In particular, this cellular automaton (if started with one alive cell) generates a fractal which is known as the \textbf{Sierpiński triangle}.
 Rule 1 is an example of a Class 2 cellular automaton, which can be seen in \autoref{fig:rule1}.
-\imagewithwidth{figures/rule1}{0.7\textwidth}{fig:rule1}{The first 63 generations of Rule 1 (=0000001) visualized as a stack of generations (if the starting configuration is just a single alive cell in the middle of the grid) beginning at the top of the grid}{}
+\imagewithwidth{figures/rule1}{0.4\textwidth}{fig:rule1}{The first 63 generations of Rule 1 (=0000001) visualized as a stack of generations (if the starting configuration is just a single alive cell in the middle of the grid) beginning at the top of the grid}{}
 \subsection{2D cellular automata (Game of Life)}
 As already mentioned, a cellular automaton can also be defined in a grid of higher dimensions.
 When going to two dimensions, the general idea stays the same, but the neighborhood of a cell is defined a bit differently, as the neighborhood of a single cell consists of 9 cells (the cell itself and the 8 cells surrounding it).
@@ -242,9 +242,9 @@ A GIF with multiple of these patterns can be found in the footnote\footnote{\url
 An interesting observation about these patterns (or generally all patterns) is that they can be used to create complex structures,
 but they are also very sensitive to external influences. Even if a single cell is changed, the whole pattern can change drastically (often leading to a complete extinction of the pattern).
 This matches the sensitivity of complex systems in the real world, where small changes can lead to large effects.
-\imagewithwidth{figures/stable}{0.5\textwidth}{fig:stable}{Examples for stable formations\\Source: \url{https://natureofcode.com/static/4f9158d65163cbbb8fa41030a2000079/e80fe/07_ca_29.webp}}{}
-\imagewithwidth{figures/oscillator}{0.5\textwidth}{fig:oscillator}{Examples for oscillators\\Source: \url{https://natureofcode.com/static/04f7903e1010ffd716e12c5c86785894/d4cd6/07_ca_30.webp}}{}
-\imagewithwidth{figures/spaceship}{0.5\textwidth}{fig:spaceship}{Examples for spaceships\\Source: \url{https://natureofcode.com/static/bbac4c485b936395226f8b6addd24e19/46ba6/07_ca_31.webp}}{}
+\imagewithwidth{figures/stable}{0.4\textwidth}{fig:stable}{Examples for stable formations\\Source: \url{https://natureofcode.com/static/4f9158d65163cbbb8fa41030a2000079/e80fe/07_ca_29.webp}}{}
+\imagewithwidth{figures/oscillator}{0.4\textwidth}{fig:oscillator}{Examples for oscillators\\Source: \url{https://natureofcode.com/static/04f7903e1010ffd716e12c5c86785894/d4cd6/07_ca_30.webp}}{}
+\imagewithwidth{figures/spaceship}{0.4\textwidth}{fig:spaceship}{Examples for spaceships\\Source: \url{https://natureofcode.com/static/bbac4c485b936395226f8b6addd24e19/46ba6/07_ca_31.webp}}{}
 
 \section{Implementation}
 \subsection{Implementation of 1D in Julia}
@@ -262,7 +262,7 @@ For example, if the rule number is 90 (which is 1011010 in binary) and the neigh
 The main part is the \texttt{simulate\_ca} function, which takes the initial state, the rule number and the number of generations and returns all the generated states as a vector of vectors.
 This history can then be visualized by displaying the state of the cellular automaton at each time step in a 2D grid, which can be done using the \texttt{plot\_ca\_history} function.
 \autoref{fig:carule89} shows the result of the implementation of Rule 89 with 101 cells and 50 generations, where the starting state is a single alive cell in the middle of the grid.
-\imagewithwidth{figures/carule89}{0.6\textwidth}{fig:carule89}{Generated diagram of Rule 89 with 101 Cells, 50 Generations}{}
+\imagewithwidth{figures/carule89}{0.4\textwidth}{fig:carule89}{Generated diagram of Rule 89 with 101 Cells, 50 Generations}{}
 
 \subsection{Implementation of 2D (Game of Life) in Julia}
 The core idea of the 2D cellular automaton is the same as for the 1D cellular automaton, but the neighborhood of a cell is defined differently.
@@ -317,9 +317,10 @@ In my example, I initialized the grid with 35\% of healthy cells (blue) and 15\%
 If you run the simulation, you will see how the cells seem like they are fighting each other, with the infected cells spreading the infection to the healthy cells, while the healthy cells try to survive and reproduce.
 The simulation for 1000 generations can be found here\footnote{\url{https://github.com/TecToast/JuliaGameOfLife/blob/main/gifs/infection_simulation.gif}}. The end frame of this specific simulation can be seen in \autoref{fig:infection_frame_1000}.
 We can observe that the healthy cells (blue) form a pipe like structure, while the infected cells (red) form are more clumped together and are almost always connected to healthy cells (as soon as this is not the case, it is just a matter of time that they die, as they can't reproduce themselves).
+I chose the numbers for the rules in such a way that there is a balance between the two types of cells, but I could easily favor one type over the other by changing the rules.
 The start configuration of the Infection Simulation can be seen in \autoref{fig:infection_frame_1}.
-\imagewithwidth{figures/infection_frame_1}{0.5\textwidth}{fig:infection_frame_1}{Initial state of the Infection Simulation, with 35\% healthy cells (blue) and 15\% infected cells (red) at the beginning. The rest of the cells are dead (white). The rules are explained in the text.}{}
-\imagewithwidth{figures/infection_frame_1000}{0.5\textwidth}{fig:infection_frame_1000}{Infection Simulation after 1000 generations}{}
+\imagewithwidth{figures/infection_frame_1}{0.4\textwidth}{fig:infection_frame_1}{Initial state of the Infection Simulation, with 35\% healthy cells (blue) and 15\% infected cells (red) at the beginning. The rest of the cells are dead (white). The rules are explained in the text.}{}
+\imagewithwidth{figures/infection_frame_1000}{0.4\textwidth}{fig:infection_frame_1000}{Infection Simulation after 1000 generations}{}
 \subsection{Comparison with other programming languages}
 When comparing the implementation of the Game of Life in Julia to other programming languages such as Python or JavaScript, several objective differences can be observed:
 \begin{itemize}
@@ -330,13 +331,17 @@ When comparing the implementation of the Game of Life in Julia to other programm
 Especially the performance aspect is important for simulations, as they often involve large arrays and matrices,
 which can be computationally expensive to process, if you want to simulate thousands or even millions of generations.
 \section{Discussion}
-In this section, we will discuss how simulations using cellular automata relates to PDE-based simulations.
+In this section, we will discuss an example usage of cellular automata in the real world and how simulations using cellular automata relates to other types of simulations.
 
-Partial Differential Equations (PDEs) are a powerful tool for modeling continuous systems, such as fluid dynamics, heat transfer, and wave propagation.
+Cellular automata are the foundation behind the Lattice Boltzmann method (LBM), which is used in practice to simulate fluid dynamics.
+The theory/logic behind cellular automata - local interactions and discrete time steps - allows the algorithm to be parallelized and therefore be very efficient on GPUs.
+
+Another method for simulating continuous systems is the use of Partial Differential Equations (PDEs).
+They are a powerful tool for modeling continuous systems, such as fluid dynamics, heat transfer, and wave propagation.
 However, they can be difficult to solve analytically and often require numerical methods for their solution.
 Cellular automata, on the other hand, are discrete models that can be used to simulate systems with local interactions.
-While they are not a direct replacement for PDEs, they can be used to model systems that exhibit similar behavior.\\
-\textit{This section will be extended}
+While they are not a direct replacement for PDEs, they can be used to model systems that exhibit similar behavior.
+The concept of a time step and update rules, where we update the state of the system at discrete intervals, is also present in a similar form in other types of simulation.
 
 \section{Conclusions}
 In this paper, we explored the fundamental concepts of cellular automata, with a particular focus on Conway's Game of Life,
