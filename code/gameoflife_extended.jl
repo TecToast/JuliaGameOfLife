@@ -7,6 +7,7 @@ This module implements the Infection Simulation referenced in the paper.
 
 struct Cell
     color::Symbol
+    # may be extended with more properties
 end
 
 """
