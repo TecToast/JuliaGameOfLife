@@ -3,28 +3,29 @@
 \end{frame}
 
 \begin{frame}{What's that?}
-    \includegraphics[width=0.9\linewidth]{../paper/figures/game_of_life_still}
+    \centering
+    \includegraphics[width=0.6\linewidth]{../paper/figures/game_of_life_still}
 \end{frame}
 
 \begin{frame}{Overview}
-    \begin{columns}
+    \begin{columns}[b]
         \column{0.333\linewidth}
         \begin{figure}
             \centering
-            \includegraphics[width=0.8\textwidth]{../paper/figures/rule90}
-            \caption{1D Cellular Automata}
+            \includegraphics[width=0.8\textwidth]{../paper/figures/rule90}\\
+            1D Cellular Automata
         \end{figure}
         \column{0.333\linewidth}
         \begin{figure}
             \centering
-            \includegraphics[width=0.8\textwidth]{../paper/figures/spaceship}
-            \caption{2D Cellular Automata}
+            \includegraphics[width=0.8\textwidth]{../paper/figures/spaceship}\\
+            2D Cellular Automata
         \end{figure}
         \column{0.333\linewidth}
         \begin{figure}
             \centering
-            \includegraphics[width=0.8\textwidth]{../paper/figures/julia}
-            \caption{Julia Implementation\footnotemark}
+            \includegraphics[width=0.8\textwidth]{../paper/figures/julia}\\
+            Julia Implementation\footnotemark
         \end{figure}
     \end{columns}
     \footnotetext[1]{\url{https://commons.wikimedia.org/wiki/File:Julia_Programming_Language_Logo.svg}}
@@ -51,7 +52,7 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{1D CA: Ruleset}
+\begin{frame}{1D Cellular Automata: Ruleset}
     \begin{figure}
         \centering
         \includegraphics[width=\textwidth]{../paper/figures/ruleset_example.png}
@@ -59,13 +60,39 @@
     \end{figure}
 \end{frame}
 
-\begin{frame}{1D CA: Visualization}
-    \begin{figure}
-        \centering
-        \includegraphics[width=0.5\textwidth]{../paper/figures/carule89}
-        \caption{Visualization of generations as rows in a 2D grid}
+\begin{frame}{1D Cellular Automata: Visualization (Rule 89 = 1011001)}
+    \centering
+    \includegraphics[width=0.5\textwidth]{../paper/figures/carule89_step0}
+\end{frame}
 
-    \end{figure}
+\begin{frame}{1D Cellular Automata: Visualization (Rule 89 = 1011001)}
+    \centering
+    \includegraphics[width=0.5\textwidth]{../paper/figures/carule89_step1}
+\end{frame}
+
+\begin{frame}{1D Cellular Automata: Visualization (Rule 89 = 1011001)}
+    \centering
+    \includegraphics[width=0.5\textwidth]{../paper/figures/carule89_step2}
+\end{frame}
+
+\begin{frame}{1D Cellular Automata: Visualization (Rule 89 = 1011001)}
+    \centering
+    \includegraphics[width=0.5\textwidth]{../paper/figures/carule89_step3}
+\end{frame}
+
+\begin{frame}{1D Cellular Automata: Visualization (Rule 89 = 1011001)}
+    \centering
+    \includegraphics[width=0.5\textwidth]{../paper/figures/carule89_step4}
+\end{frame}
+
+\begin{frame}{1D Cellular Automata: Visualization (Rule 89 = 1011001)}
+    \centering
+    \includegraphics[width=0.5\textwidth]{../paper/figures/carule89_step5}
+\end{frame}
+
+\begin{frame}{1D Cellular Automata: Visualization (Rule 89 = 1011001)}
+    \centering
+    \includegraphics[width=0.5\textwidth]{../paper/figures/carule89}
 
 \end{frame}
 
@@ -132,13 +159,13 @@
 
 
 \section{Julia}
-\begin{frame}[fragile]{1D CA in Julia - apply\_rule function}
+\begin{frame}[fragile]{1D Cellular Automata in Julia - apply\_rule function}
     \begin{figure}
         \centering
         \includegraphics[width=\textwidth]{../paper/figures/ruleset_example.png}
         \caption{Example: Mapping neighborhood to next state (here rule number 90)}
     \end{figure}
-    \begin{lstlisting}[language=Julia, caption={apply\_rule function for 1D CA}, basicstyle=\ttfamily\scriptsize]
+    \begin{lstlisting}[language=Julia, caption={apply\_rule function for 1D Cellular Automata}, basicstyle=\ttfamily\scriptsize]
 function apply_rule(left::Int, center::Int, right::Int, rule_number::Int)::Int
     neighborhood_value = left * 4 + center * 2 + right * 1
     return (rule_number >> neighborhood_value) & 1
@@ -146,7 +173,7 @@ end
 \end{lstlisting}
 \end{frame}
 
-\begin{frame}{Rest of 1D CA Implementation}
+\begin{frame}{Rest of 1D Cellular Automata Implementation}
     \begin{itemize}
         \item \textbf{Initialization:} Create initial state (e.g., random)
         \item \textbf{Update:} Apply rules to each cell
@@ -181,8 +208,29 @@ end
 \begin{frame}{Why Julia for Simulation?}
     \begin{itemize}
         \item \textbf{Performance:} Fast, optimized for numerical computing
+              \begin{figure}
+                  \centering
+                  \includegraphics[width=0.5\textwidth]{../paper/figures/julia_benchmark}
+                  \caption{Benchmark of various algorithms in comparison to C \footnotemark}
+              \end{figure}
+    \end{itemize}
+    \footnotetext{\url{https://julialang.org/assets/images/benchmarks.svg}}
+\end{frame}
+
+\begin{frame}{Why Julia for Simulation?}
+    \begin{itemize}
         \item \textbf{Syntax:} Concise, math-like, less verbose than JavaScript
+              \begin{itemize}
+                  \item \texttt{f(x) = x\^{}2} vs. \texttt{function f(x) return x * x end}
+                  \item Simple vector/matrix operations
+              \end{itemize}
+              \vspace{2em}
         \item \textbf{Ecosystem:} Rich packages for simulation and visualization
+              \begin{itemize}
+                  \item \texttt{Plots.jl} for plotting (with different backends)
+                  \item \texttt{DataFrames.jl} for data manipulation
+                  \item Built-in support for parallel computing (even on GPUs)
+              \end{itemize}
     \end{itemize}
 \end{frame}
 
@@ -200,20 +248,17 @@ end
 \end{frame}
 
 
-\section{Conclusions}
-\begin{frame}{Conclusions / Relation to seminar}
+\section{Summary}
+\begin{frame}{Summary}
     \begin{itemize}
         \item Covered cellular automata basics, especially Game of Life.
         \item Showed Julia implementation and visualization.
         \item Simple rules yield complex behavior.
         \item Julia is fast and flexible for simulations.
         \item Cellular automata help study emergent phenomena.
+        \item Cellular automata are very easy to parallelize (e.g., Lattice Boltzmann Method).
+              \vspace{1em}
+        \item EMail: \url{st187882@stud.uni-stuttgart.de}
+        \item GitHub: \url{https://github.com/TecToast/JuliaGameOfLife}
     \end{itemize}
-\end{frame}
-
-
-\begin{frame}{Thanks}
-    \centering
-    \Huge
-    Thank you for your attention!
 \end{frame}
